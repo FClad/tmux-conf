@@ -116,15 +116,8 @@ def unreadmail ():
 	return out
 
 
-def currenttrack ():
-	command = 'tell application "iTunes"\n \
-		if player state is playing then\n \
-			set t_name to the name of the current track\n \
-			set t_artist to the artist of the current track\n \
-			return "Playing \'" & t_name as text & "\' from " & t_artist as text\n \
-		end if\n \
-		return ""\n \
-	end tell\n'
+def getplayerstate ():
+	command = 'tell application "iTunes" to return the player state'
 
 	# Run AppleScript as a subprocess
 	p = subprocess.Popen(['osascript', '-e', command],
@@ -138,7 +131,72 @@ def currenttrack ():
 	if p.returncode != 0 or len (output) < 2:
 		return ''
 
-	return output[:-1] + ' - '
+	return output[:-1]
+
+
+def gettrackname (maxlength = 0):
+	command = 'tell application "iTunes" to return the name of the current track'
+
+	# Run AppleScript as a subprocess
+	p = subprocess.Popen(['osascript', '-e', command],
+			stdout=subprocess.PIPE)
+
+	# Retrieve script output
+	output = p.communicate()[0]
+
+	# Silently return in case of error
+	# (you do not want to mess up the status bar)
+	if p.returncode != 0 or len (output) < 2:
+		return ''
+
+	# Remove ending \n
+	out = output[:-1]
+
+	# Truncate string if necessary
+	if maxlength > 0:
+		out = out[:maxlength] + (out[maxlength:] and '..')
+
+	return out
+
+
+def gettrackartist (maxlength = 0):
+	command = 'tell application "iTunes" to return the artist of the current track'
+
+	# Run AppleScript as a subprocess
+	p = subprocess.Popen(['osascript', '-e', command],
+			stdout=subprocess.PIPE)
+
+	# Retrieve script output
+	output = p.communicate()[0]
+
+	# Silently return in case of error
+	# (you do not want to mess up the status bar)
+	if p.returncode != 0 or len (output) < 2:
+		return ''
+
+	# Remove ending \n
+	out = output[:-1]
+
+	# Truncate string if necessary
+	if maxlength > 0:
+		out = out[:maxlength] + (out[maxlength:] and '..')
+
+	return out
+
+
+def currenttrack (l_name = 0, l_artist = 0):
+	if getplayerstate () != 'playing':
+		return ''
+
+	t_name = gettrackname (l_name)
+	t_artist = gettrackartist (l_artist)
+
+	if t_name == '' or t_artist == '':
+		return ''
+
+	out = 'Playing \'' + t_name + '\' from ' + t_artist + ' - '
+
+	return out
 
 
 def resusage ():
@@ -158,7 +216,7 @@ if __name__ == "__main__":
 	if sys.argv[1] == 'left':
 		sys.stdout.write (resusage() + '  ' + batterystatus())
 	elif sys.argv[1] == 'right':
-		sys.stdout.write (currenttrack() + unreadmail())
+		sys.stdout.write (currenttrack(20, 15) + unreadmail())
 	
 	sys.exit (0)
 
