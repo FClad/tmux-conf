@@ -134,6 +134,12 @@ def getplayerstate ():
 	return output[:-1]
 
 
+def truncatestr (string, length):
+	return ((string[:length-2] + '..')
+			if length > 2 and len (string) > length
+			else string)
+
+
 def gettrackname (maxlength = 0):
 	command = 'tell application "iTunes" to return the name of the current track'
 
@@ -153,8 +159,7 @@ def gettrackname (maxlength = 0):
 	out = output[:-1]
 
 	# Truncate string if necessary
-	if maxlength > 0:
-		out = out[:maxlength] + (out[maxlength:] and '..')
+	out = truncatestr (out, maxlength)
 
 	return out
 
@@ -178,8 +183,7 @@ def gettrackartist (maxlength = 0):
 	out = output[:-1]
 
 	# Truncate string if necessary
-	if maxlength > 0:
-		out = out[:maxlength] + (out[maxlength:] and '..')
+	out = truncatestr (out, maxlength)
 
 	return out
 
@@ -216,7 +220,7 @@ if __name__ == "__main__":
 	if sys.argv[1] == 'left':
 		sys.stdout.write (resusage() + '  ' + batterystatus())
 	elif sys.argv[1] == 'right':
-		sys.stdout.write (currenttrack(20, 15) + unreadmail())
+		sys.stdout.write (currenttrack(20, 17) + unreadmail())
 	
 	sys.exit (0)
 
