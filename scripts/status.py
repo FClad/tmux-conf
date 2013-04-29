@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-import math, subprocess, sys
-from psutil import cpu_percent, virtual_memory
+import math, subprocess, sys, platform
+
+try:
+	from psutil import cpu_percent, virtual_memory
+	psutil_loaded = True
+except ImportError:
+	psutil_loaded = False
+
 
 def getvalue (registry, field):
 	line = [l for l in registry.splitlines() if field in l][0]
@@ -204,6 +210,9 @@ def currenttrack (l_name = 0, l_artist = 0):
 
 
 def resusage ():
+	if not psutil_loaded:
+		return 'Unable to load psutil module'
+
 	p_cpu = cpu_percent (1)
 	p_mem = virtual_memory ().percent
 
@@ -216,11 +225,20 @@ def resusage ():
 if __name__ == "__main__":
 	if len (sys.argv) < 2:
 		sys.exit (1)
+	
+	# Retrieve OS name
+	system = platform.system ()
 
-	if sys.argv[1] == 'left':
-		sys.stdout.write (resusage() + '  ' + batterystatus())
-	elif sys.argv[1] == 'right':
-		sys.stdout.write (currenttrack(20, 17) + unreadmail())
+	if system == 'Darwin':
+		# OSX settings
+		if sys.argv[1] == 'left':
+			sys.stdout.write (resusage() + '  ' + batterystatus())
+		elif sys.argv[1] == 'right':
+			sys.stdout.write (currenttrack(20, 17) + unreadmail() + ' -')
+	else:
+		# Other system (e.g. Linux) settings
+		if sys.argv[1] == 'left':
+			sys.stdout.write (resusage())
 	
 	sys.exit (0)
 
