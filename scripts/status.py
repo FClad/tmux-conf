@@ -10,6 +10,24 @@ except ImportError:
 	psutil_loaded = False
 
 
+def apprunning (name):
+	command = 'tell application "System Events" to count processes whose name is "' + name + '"'
+
+	# Run AppleScript as a subprocess
+	p = subprocess.Popen(['osascript', '-e', command],
+			stdout=subprocess.PIPE)
+
+	# Retrieve script output
+	output = p.communicate()[0]
+
+	# Silently return in case of error
+	# (you do not want to mess up the status bar)
+	if p.returncode != 0 or len (output) < 2:
+		return False
+
+	return (int (output[:-1]) > 0)
+
+
 def getvalue (registry, field):
 	line = [l for l in registry.splitlines() if field in l][0]
 	value = line.rpartition('=')[-1].strip()
@@ -104,6 +122,9 @@ def getunread (account = '', mailbox = ''):
 
 
 def unreadmail ():
+	if not apprunning ('Mail'):
+		return 0
+
 	# Count unread emails in inbox
 	unread = getunread ()
 
@@ -123,6 +144,9 @@ def unreadmail ():
 
 
 def getplayerstate ():
+	if not apprunning ('iTunes'):
+		return ''
+
 	command = 'tell application "iTunes" to return the player state'
 
 	# Run AppleScript as a subprocess
