@@ -132,13 +132,14 @@ def unreadmail ():
 	unread += getunread (account = 'Unistra', mailbox = 'Equipe RP')
 	unread += getunread (account = 'Unistra', mailbox = 'Self')
 
+	out = ''
+
 	# Prepare ouput
 	if unread > 0:
 		out = str (unread) + ' unread email'
 		if unread > 1:
 			out += 's'
-	else:
-		out = 'No unread email'
+		out += ' -'
 	
 	return out
 
@@ -258,7 +259,7 @@ if __name__ == "__main__":
 		if sys.argv[1] == 'left':
 			sys.stdout.write (resusage() + '  ' + batterystatus())
 		elif sys.argv[1] == 'right':
-			sys.stdout.write (currenttrack(20, 17) + unreadmail() + ' -')
+			sys.stdout.write (currenttrack(20, 17) + unreadmail())
 	else:
 		# Other system (e.g. Linux) settings
 		if sys.argv[1] == 'left':
