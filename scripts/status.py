@@ -136,7 +136,7 @@ def unreadmail ():
 
 	# Prepare ouput
 	if unread > 0:
-		out = str (unread) + ' unread email'
+		out = ' ' + str (unread) + ' unread email'
 		if unread > 1:
 			out += 's'
 		out += ' -'
@@ -220,16 +220,19 @@ def gettrackartist (maxlength = 0):
 
 
 def currenttrack (l_name = 0, l_artist = 0):
-	if getplayerstate () != 'playing':
-		return ''
+	out = ''
 
-	t_name = gettrackname (l_name)
-	t_artist = gettrackartist (l_artist)
+	state = getplayerstate ()
 
-	if t_name == '' or t_artist == '':
-		return ''
+	if state == 'playing':
+		t_name = gettrackname (l_name)
+		t_artist = gettrackartist (l_artist)
 
-	out = 'Playing \'' + t_name + '\' from ' + t_artist + ' - '
+		if t_name != '' and t_artist != '':
+			out = 'Playing \'' + t_name + '\' from ' + t_artist + ' -'
+
+	elif state == 'paused':
+		out = 'iTunes paused -'
 
 	return out
 
