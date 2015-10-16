@@ -129,8 +129,7 @@ def unreadmail ():
 	unread = getunread ()
 
 	# Count unread emails in custom mailboxes
-	unread += getunread (account = 'Unistra', mailbox = 'Equipe RP')
-	unread += getunread (account = 'Unistra', mailbox = 'Self')
+	#unread += getunread (account = '<account>', mailbox = '<mailbox>')
 
 	out = ''
 
@@ -229,7 +228,7 @@ def currenttrack (l_name = 0, l_artist = 0):
 		t_artist = gettrackartist (l_artist)
 
 		if t_name != '' and t_artist != '':
-			out = 'Playing \'' + t_name + '\' from ' + t_artist + ' -'
+			out = '\'' + t_name + '\' by ' + t_artist + ' -'
 
 	elif state == 'paused':
 		out = 'iTunes paused -'
@@ -262,7 +261,7 @@ if __name__ == "__main__":
 		if sys.argv[1] == 'left':
 			sys.stdout.write (resusage() + '  ' + batterystatus())
 		elif sys.argv[1] == 'right':
-			sys.stdout.write (currenttrack(20, 17) + unreadmail())
+			sys.stdout.write (currenttrack(30, 20) + unreadmail())
 	else:
 		# Other system (e.g. Linux) settings
 		if sys.argv[1] == 'left':
