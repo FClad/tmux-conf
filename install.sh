@@ -25,3 +25,5 @@ if [ ! -L "${HOME}/.tmux.conf" ]; then
 	ln -s ${DIR}/tmux.conf ${HOME}/.tmux.conf
 fi
 
+echo "If not already installed, please run 'brew install reattach-to-user-namespace' before attempting to start tmux"
+

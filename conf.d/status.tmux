@@ -5,7 +5,7 @@ set-option -g status on
 
 # other statusbar configs:
 set-option -g status-interval 5
-set-option -g status-utf8 on
+#set-option -g status-utf8 on
 set-option -g status-justify right
 
 # center align window list

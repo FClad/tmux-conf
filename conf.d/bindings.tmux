@@ -31,8 +31,8 @@ unbind [
 unbind p
 bind Escape copy-mode
 bind p paste-buffer
-bind-key -t emacs-copy 'v' begin-selection
-bind-key -t emacs-copy 'y' copy-selection
+bind-key -T copy-mode-emacs 'v' send-keys -X begin-selection
+bind-key -T copy-mode-emacs 'y' send-keys -X copy-selection
 
 
 # Layouts bindings
@@ -40,8 +40,12 @@ bind	C	source-file ~/.tmux/layouts/cdev.tmux
 
 
 # Enable mouse integration
-set -g mode-mouse on						# Scrolling / text selection with the mouse
-set -g mouse-resize-pane on					# Allows pane resizing with the mouse 
-set -g mouse-select-pane on					# Allows pane switching with the mouse
-set -g mouse-select-window on				# Allows tabs switching with the mouse
+#set -g mouse on
+#bind -n WheelUpPane		select-pane -t= \; copy-mode -e \; send-keys -M
+#bind -n WheelDownPane	select-pane -t= \; send-keys -M
+#
+set-option -g -q mouse on
+bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -e; send-keys PPage"
+bind-key -T copy-mode-vi PPage send-keys -X page-up
+bind-key -T copy-mode-vi NPage send-keys -X page-down
 
